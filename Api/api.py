@@ -1,6 +1,8 @@
 # Import libraries
 from flask import Flask, jsonify, request
-from bson.json_util import dumps 
+from bson.json_util import dumps
+# from bson.objectid import ObjectId 
+from dbConnect import connectDB
 import json
 import model
 # from flask_cors import CORS
@@ -10,21 +12,36 @@ app = Flask(__name__)
 # CORS(app)
 
 # ROUTES
+
+#get all animes
 @app.route('/animes', methods=['GET'])
 def getHello():
-	    return dumps(model.getAnimes())
+    return dumps(model.getAnimes())
 
-@app.route('/hello', methods=['POST'])
-def postHello():
-	return 'This is a POST request!'
+#find anime by id
+@app.route('/animes/<id>', methods=['GET'])
+def getAnimeById(id):
+    return dumps(dumps(model.getAnimeById(id)))
 
-@app.route('/hello', methods=['PUT'])
-def putHello():
-	return 'This is a PUT request!'
+#insert anime
+@app.route('/animes/create', methods=['POST'])
+def createAnime():
+    request_data = request.get_json()
+    model.insertAnime(request_data)
+    return dumps("Anime added successfully")
 
-@app.route('/hello', methods=['DELETE'])
-def deleteHello():
-	return 'This is a DELETE request!'
+#delete anime
+@app.route('/animes/delete/<id>', methods=['DELETE'])
+def deleteAnime(id):
+    model.deleteAnime(id)
+    return dumps("Anime deleted successfully")
+
+#update anime
+@app.route('/animes/update/<id>', methods=['PUT'])
+def updateAnime(id):
+    request_data = request.get_json()
+    model.updateAnime(id, request_data)
+    return dumps("Anime updated successfully")
 
 
 
