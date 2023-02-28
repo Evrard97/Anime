@@ -10,9 +10,9 @@ app = Flask(__name__)
 # CORS(app)
 
 # ROUTES
-@app.route('/hello', methods=['GET'])
+@app.route('/animes', methods=['GET'])
 def getHello():
-	    return dumps(model.getHello())
+	    return dumps(model.getAnimes())
 
 @app.route('/hello', methods=['POST'])
 def postHello():

@@ -1,6 +1,6 @@
 from dbConnect import connectDB
 
-def getHello():
+def getAnimes():
     db = connectDB()
     anime = db.find()
     return anime
