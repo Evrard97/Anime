@@ -1,17 +1,18 @@
 # Import libraries
 from flask import Flask, jsonify, request
 from bson.json_util import dumps
-# from bson.objectid import ObjectId 
 from dbConnect import connectDB
 import json
 import model
-# from flask_cors import CORS
+from flask_cors import CORS
 
 app = Flask(__name__)
 
-# CORS(app)
+CORS(app)
 
 # ROUTES
+
+###############################################CRUD##############################################################
 
 #get all animes
 @app.route('/animes', methods=['GET'])
@@ -43,13 +44,32 @@ def updateAnime(id):
     model.updateAnime(id, request_data)
     return dumps("Anime updated successfully")
 
+#################################################QUESTIONS########################################################
 
+# #most popular genres
+# @app.route('/animes/genres', methods=['GET'])
+# def getMostPopularGenres():
+#     return dumps(model.getMostPopularGenres())
 
+#top studios by nb of animes
+@app.route('/animes/studios', methods=['GET'])
+def getTopStudios():
+    return dumps(model.getTopStudios())
 
+#best anime by year
+@app.route('/animes/year', methods=['GET'])
+def getBestAnimeByYear():
+    return dumps(model.bestMoviesByYear())
 
+#Durée moyenne des épisodes par genre
+@app.route('/animes/episodes', methods=['GET'])
+def getAvgEpisodesByGenre():
+    return dumps(model.getAverageDurationByGenre())
 
-
-
+#Quels sont les genres les plus populaires parmi les animes
+@app.route('/animes/genres', methods=['GET'])
+def getMostPopularGenres():
+    return dumps(model.getMostPopularGenres())
 
 
 if __name__ == '__main__':
