@@ -31,34 +31,18 @@ def deleteAnime(id):
     db.delete_one({"_id": ObjectId(id)})
     return "Anime deleted successfully"
 
-#quels sont les genres les plus populaires?
+############################# QUESTIONS ############################################
+
+#Trouver les dix genres les plus populaires dans ce JSON, en triant par ordre décroissant de popularité.
 def getMostPopularGenres():
     db = connectDB()
-    anime = db.find({'rank': 25})
-    return anime
-
-#Quel est le pourcentage d'anime répertoriés dans ce JSON qui sont des films par rapport aux séries TV ?
-
-#Quels sont les genres les plus populaires parmi les animes?
-def getMostPopularGenres():
-    db = connectDB()
-    anime = db.aggregate([
-        {"$project":{"genres.name":1, "_id":0, "mal_id":1}},
+    anime = anime.aggregate([
         {"$unwind": "$genres"},
-        {"$group":{"_id":"$genres.name","nb":{"$sum":1}}},
-        {"$sort":{"nb":-1}}
-    ]) 
-    return anime
-
-#top studios by nb of animes
-def getTopStudios():
-    db = connectDB()
-    anime = db.aggregate([
-        {"$unwind":"$studios"},
-        {"$group":{"_id": "$studios.name", "count": {"$sum":1}}},
-        {"$project": {"_id": 0, "studio": "$_id", "count": 1}},
-        {"$sort":{"count": -1}},
-    ]) 
+        {"$group": {"_id": "$genres.name", "count": {"$sum": 1}, "total_popularity": {"$sum": "$popularity"}}},
+        {"$project": {"_id": 1, "count": 1, "avg_popularity": {"$round": [{"$divide": ["$total_popularity", "$count"]}, 2]}}},
+        {"$sort": {"avg_popularity": -1}},
+        {"$limit": 10}
+        ])
     return anime
 
 #top
@@ -72,7 +56,6 @@ def bestMoviesByYear():
     ])
     return anime
 
-
 #Durée moyenne des épisodes par genre
 def getAverageDurationByGenre():
     db = connectDB()
@@ -80,13 +63,21 @@ def getAverageDurationByGenre():
     ]) 
     return anime
 
-#Quels sont les genres les plus populaires parmi les animes
-def getMostPopularGenres():
+
+#Trouver les producteurs qui ont produit des anime avec les meilleures notes moyennes, en triant par ordre décroissant de note moyenne.
+def getBestProducers():
     db = connectDB()
     anime = db.aggregate([
-        {"$project":{"genres.name":1, "_id":0, "mal_id":1}},
-        {"$unwind": "$genres"},
-        {"$group":{"_id":"$genres.name","nb":{"$sum":1}}},
-        {"$sort":{"nb":-1}}
-    ]) 
+        {"$unwind": "$producers"},
+        {"$group": {"_id": "$producers.name", "avg_score": {"$avg": "$score"}, "count": {"$sum": 1}}},
+        {"$match": {"count": {"$gt": 0}}},
+        {"$sort": {"avg_score": -1}},
+        {"$limit": 5}
+    ])
+    return anime
+
+#top 3 des animes
+def getTop3():
+    db = connectDB()
+    anime = db.find({"type": "TV", "score": {"$ne": ""}}).sort("score", -1).limit(3)
     return anime

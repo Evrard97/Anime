@@ -46,31 +46,30 @@ def updateAnime(id):
 
 #################################################QUESTIONS########################################################
 
-# #most popular genres
-# @app.route('/animes/genres', methods=['GET'])
-# def getMostPopularGenres():
-#     return dumps(model.getMostPopularGenres())
+#Quels sont les genres les plus populaires parmi les animes
+@app.route('/animes/genres', methods=['GET'])
+def getMostPopularGenres():
+    return dumps(model.getMostPopularGenres())
 
 #top studios by nb of animes
 @app.route('/animes/studios', methods=['GET'])
 def getTopStudios():
-    return dumps(model.getTopStudios())
+    return dumps(model.getBestProducers())
 
 #best anime by year
 @app.route('/animes/year', methods=['GET'])
 def getBestAnimeByYear():
     return dumps(model.bestMoviesByYear())
 
-#Durée moyenne des épisodes par genre
-@app.route('/animes/episodes', methods=['GET'])
-def getAvgEpisodesByGenre():
+#average duration by genre
+@app.route('/animes/duration', methods=['GET'])
+def getAverageDurationByGenre():
     return dumps(model.getAverageDurationByGenre())
 
-#Quels sont les genres les plus populaires parmi les animes
-@app.route('/animes/genres', methods=['GET'])
-def getMostPopularGenres():
-    return dumps(model.getMostPopularGenres())
-
+#getTop3
+@app.route('/animes/top3', methods=['GET'])
+def getTop3():
+    return dumps(model.getTop3())
 
 if __name__ == '__main__':
     try:
